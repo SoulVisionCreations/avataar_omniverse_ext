@@ -1,5 +1,9 @@
 import asyncio
 import os
+from os.path import abspath
+from inspect import getsourcefile
+from pathlib import Path
+
 import shutil
 import urllib.request
 import zipfile
@@ -27,7 +31,7 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
         print("converting done")
 
     async def on_click_async(self, input_url):
-        newfolder = os.path.join(self.currentdirectory, input_url.model.get_value_as_string().split("/")[-1][:-4])
+        newfolder = os.path.join(self.download_path, input_url.model.get_value_as_string().split("/")[-1][:-4])
         os.makedirs(newfolder, exist_ok=True)
 
         self.destination_path = os.path.join(newfolder, input_url.model.get_value_as_string().split("/")[-1])
@@ -47,8 +51,7 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
         await self.convert_asset_to_usd(os.path.join(newfolder, "latest.obj"), os.path.join(newfolder, input_url.model.get_value_as_string().split("/")[-1][:-4] + ".usd"))
         object_id = input_url.model.get_value_as_string().split("/")[-1][:-4]
 
-        base_path = os.path.join(self.user_profile, "documents", "incarnate-mesh-omniverse", "exts", "incarnate.omniverse")
-        asset_path = os.path.join(base_path, object_id, f'{object_id}.usd')
+        asset_path = os.path.join(self.download_path, object_id, f'{object_id}.usd')
 
         omni.kit.commands.execute(
             'CreatePayloadCommand',
@@ -63,17 +66,16 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
         print("[incarnate.omniverse] incarnate omniverse startup")
 
         self._count = 0
-
+        cur_path = Path(abspath(getsourcefile(lambda:1)))
+        self.currentdirectory = str(cur_path.parent.absolute())
+        self.download_path = os.path.join(self.currentdirectory,"downloads")
+        os.makedirs(self.download_path, exist_ok=True)
         self._window = ui.Window("Incarnate Avataar Extension", width=300, height=200)
         with self._window.frame:
             with ui.VStack():
                 ui.Label("Enter mesh link from Avataar Creator")
                 self.user_profile = os.path.expanduser("~")
-                self.currentdirectory = os.path.join(self.user_profile, "documents", "incarnate-mesh-omniverse", "exts", "incarnate.omniverse" )
-
-                input_f = ui.StringField()
-          
-                # ui.Button("Import and View",height=1, width=1, clicked_fn=lambda: asyncio.ensure_future(self.on_click_async(input_f)))
+                input_f = ui.StringField()          
                 ui.Button("Import and View", clicked_fn=lambda: asyncio.ensure_future(self.on_click_async(input_f)))
 
     def on_shutdown(self):
