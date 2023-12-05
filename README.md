@@ -2,8 +2,7 @@
 This extension enables users to seamlessly integrate 3D objects created using Avataar Incarnate App on the Omniverse platform.
 
 ## Usage
-
-
+https://github.com/SoulVisionCreations/avataar_omniverse_ext/assets/117340215/c3bf6f78-14c8-4543-ae00-833b643b12d7
 
 
 
