@@ -1,12 +1,10 @@
 # Omniverse Extension
 This extension enables users to seamlessly integrate 3D objects created using Avataar Incarnate App on the Omniverse platform.
 
-## Usage
-https://github.com/SoulVisionCreations/avataar_omniverse_ext/assets/117340215/c3bf6f78-14c8-4543-ae00-833b643b12d7
+## Install & Enable the Avataar Extension
+https://github.com/SoulVisionCreations/avataar_omniverse_ext/assets/117340215/4f632c56-9236-4a68-b9b1-be225e381f77
 
-
-
-## Adding This Extension
+## Instructions to add this Extension
 
 To add this extension to your Omniverse app:
 1. Go into: `Extension Manager` -> `Hamburger Icon` -> `Settings` -> `Extension Search Path`
@@ -20,3 +18,7 @@ Alternatively:
 4. Add the `exts` folder path as a search path
 
 Make sure no filter is enabled and in both cases you should be able to find the new extension in the `Third Party` tab list.
+
+
+## Usage
+https://github.com/SoulVisionCreations/avataar_omniverse_ext/assets/117340215/c3bf6f78-14c8-4543-ae00-833b643b12d7
