@@ -40,15 +40,9 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
             shutil.copyfileobj(response, out_file) 
 
         with zipfile.ZipFile(self.destination_path, 'r') as zip_ref:
-            file_list = zip_ref.namelist()
-            if file_list:
-                first_file = file_list[0]
-                zip_ref.extract(first_file, newfolder)
-            first_file_path = os.path.join(newfolder, first_file)
-            with zipfile.ZipFile(first_file_path, 'r') as inner_zip_ref:
-                inner_zip_ref.extractall(newfolder)                 
+            zip_ref.extractall(newfolder)
 
-        await self.convert_asset_to_usd(os.path.join(newfolder, "latest.obj"), os.path.join(newfolder, input_url.model.get_value_as_string().split("/")[-1][:-4] + ".usd"))
+        await self.convert_asset_to_usd(os.path.join(newfolder,'obj', input_url.model.get_value_as_string().split("/")[-1][:-4] + ".obj"), os.path.join(newfolder, input_url.model.get_value_as_string().split("/")[-1][:-4] + ".usd"))
         object_id = input_url.model.get_value_as_string().split("/")[-1][:-4]
 
         asset_path = os.path.join(self.download_path, object_id, f'{object_id}.usd')
@@ -79,4 +73,5 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
                 ui.Button("Import and View", clicked_fn=lambda: asyncio.ensure_future(self.on_click_async(input_f)))
 
     def on_shutdown(self):
+        shutil.rmtree(self.download_path)
         print("[incarnate.omniverse] incarnate omniverse shutdown")
