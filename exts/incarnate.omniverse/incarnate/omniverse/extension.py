@@ -14,6 +14,9 @@ import omni.kit.asset_converter
 import omni.usd
 from pxr import Sdf
 import warnings
+import usdrt
+import time
+
 
 warnings.filterwarnings("ignore")
 class IncarnateOmniverseExtension(omni.ext.IExt):
@@ -53,11 +56,13 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
             path_to=Sdf.Path(f'/World/{object_id}'),  
             asset_path=asset_path,
             instanceable=False)
+        self.objects.append(object_id)
 
 
 
     def on_startup(self, ext_id):
         print("[incarnate.omniverse] incarnate omniverse startup")
+        self.objects = []
 
         self._count = 0
         cur_path = Path(abspath(getsourcefile(lambda:1)))
@@ -73,5 +78,13 @@ class IncarnateOmniverseExtension(omni.ext.IExt):
                 ui.Button("Import and View", clicked_fn=lambda: asyncio.ensure_future(self.on_click_async(input_f)))
 
     def on_shutdown(self):
-        shutil.rmtree(self.download_path)
+        omni.kit.commands.execute(
+            'DeletePrimsCommand',
+            paths=[Sdf.Path(f'/World/{object_id}') for object_id in self.objects])
+        objs = os.listdir(self.download_path)
+        for obj in objs:
+            try:
+                shutil.rmtree(os.path.join(self.download_path,obj))
+            except:
+                print("Unable to delete")
         print("[incarnate.omniverse] incarnate omniverse shutdown")
